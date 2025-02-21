@@ -28,6 +28,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {DecentralizedStableCoin} from "./DecentralizedStableCoin.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {console} from "forge-std/console.sol";
 
 /*
  * @title DSCEngine
@@ -100,6 +101,7 @@ contract DSCEngine is ReentrancyGuard {
     }
 
     modifier isAllowedToken(address token) {
+        console.log(s_priceFeeds[token] == address(0));
         if (s_priceFeeds[token] == address(0)) {
             revert DSCEngine__TokenNotAllowed(token);
         }
@@ -318,4 +320,18 @@ contract DSCEngine is ReentrancyGuard {
     }
 
     function getHealthFactor() external view {}
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // External & Public View & Pure Functions
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    function getAccountInformation(address user)
+        external
+        view
+        returns (uint256 totalDscMinted, uint256 collateralValueInUsd)
+    {
+        return _getAccountInformation(user);
+    }
 }
